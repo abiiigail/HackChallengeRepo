@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TaskCategoriesCell: View {
-    @State var filterIsSelected = false
+    @Binding var filterIsSelected: Bool
     static let id = "TaskCategoriesCellId"
     let category: taskCategory
     
@@ -16,9 +16,13 @@ struct TaskCategoriesCell: View {
     var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 15)
-                .stroke(.red)
-                .foregroundColor(.yellow)
-                .frame(height: 25).frame(maxWidth: .infinity)
+                .foregroundColor(filterIsSelected ? Color(.sRGB, red: 1.0, green: 0.88, blue: 0.77, opacity: 1) : .white)
+                .frame(height: 25).frame(maxWidth: .infinity).foregroundColor(.yellow)
+            
+            RoundedRectangle(cornerRadius: 15)
+                .stroke(Color(.sRGB, red: 1.0, green: 0.73, blue: 0.59, opacity: 1), lineWidth: 2)
+                .frame(height: 25).frame(maxWidth: .infinity).foregroundColor(.yellow)
+            
             Text(category.description)
                 .font(.body)
                 .foregroundColor(.black)

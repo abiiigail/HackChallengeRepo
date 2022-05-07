@@ -14,10 +14,45 @@ struct HomeView: View {
     @Binding var tasks: Tasks
     @Binding var shownTasks: [Task]
     @Binding var showFAB: Bool
+    @Binding var chosenFilters: [taskCategory]
     @Binding var userData: LoginResponse
+    @Binding var isTodayOn: Bool
+    @Binding var currentDate: Date
+    @Binding var shownEvents: [Event]
     
+    private var numPending: Int {
+    var acc = 0
+    for task in tasks.tasks {
+        if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted) && task.completed == false{
+        acc += 1
+    }
+    }
+        return acc
+    }
     
+    private var numComplete: Int {
+    var acc = 0
+    for task in tasks.tasks {
+        if task.completed == true{
+        acc += 1
+    }
+    }
+        return acc
+    }
     
+    private var numUpcoming: Int {
+    var acc = 0
+    for task in tasks.tasks {
+        var dayComponent = DateComponents()
+        dayComponent.day = 1
+        let calendar = Calendar.current
+        let nextDate: Date = calendar.date(byAdding: dayComponent, to: Date())!
+        if (Date(timeIntervalSince1970: TimeInterval(task.due_date)) + 1).formatted(date: .complete, time: .omitted) == (nextDate).formatted(date: .complete, time: .omitted) && task.completed == false {
+        acc += 1
+    }
+    }
+        return acc
+    }
     
     private var title: some View {
         Text("Welcome,")
@@ -35,8 +70,8 @@ struct HomeView: View {
     }
     
     private var pendingTasks: some View {
-        Button {
-            // TODO: add action here
+        NavigationLink{
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack{
                 RoundedRectangle(cornerRadius: 25)
@@ -57,7 +92,7 @@ struct HomeView: View {
                             .foregroundColor(.black)
                             .padding(.bottom, 2)
                         HStack{
-                        Text("8 Tasks")
+                        Text("\(numPending) Tasks")
                             .font(.system(size: 18, weight: .medium, design: .default))
                             .foregroundColor(.black)
                         Spacer()
@@ -72,12 +107,14 @@ struct HomeView: View {
                     Spacer()
                     }
                 }
-            }
         }
+        
+        }
+        
     
     private var completedTasks: some View {
-        Button {
-
+        NavigationLink{
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -100,7 +137,7 @@ struct HomeView: View {
                         .padding(.leading, 15)
                         .padding(.bottom, 2)
                     HStack{
-                        Text("3 Tasks")
+                        Text("\(numComplete) Tasks")
                             .font(.system(size: 18, weight: .medium, design: .default))
                             .foregroundColor(.black)
                             .padding(.trailing, 10)
@@ -122,8 +159,8 @@ struct HomeView: View {
     }
     
     private var upcomingTasks: some View {
-        Button {
-            // TODO: add action here
+        NavigationLink{
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -144,7 +181,7 @@ struct HomeView: View {
                         .foregroundColor(.black)
                         .padding(.bottom, 2)
                     HStack{
-                        Text("2 Tasks")
+                        Text("\(numUpcoming) Tasks")
                             .font(.system(size: 18, weight: .medium, design: .default))
                             .foregroundColor(.black)
                             .padding(.leading, -25)
@@ -169,13 +206,31 @@ struct HomeView: View {
     private var eventList: some View {
         
         VStack(alignment: .leading, spacing: 0) {
+        HStack{
         Text("Today's Events")
                 .font(.system(size: 25, weight: .bold, design: .default))
                 .foregroundColor(.black)
                 .padding(.leading, 25)
+            
+            Button {
+                refreshEvents()
+                shownEvents = []
+                for event in events.events{
+                    if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
+                        shownEvents.append(event)
+                    }} 
+            } label: {
+                Image(systemName: "arrow.clockwise")
+                    .resizable()
+                    .frame(width: 18, height: 21)
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.black)
+            }
+
+            }
         ScrollView(.horizontal, showsIndicators: true) {
             HStack {
-                ForEach($events.events, id: \.self) { event in
+                ForEach($shownEvents, id: \.self) { event in
                 NavigationLink {
                     EventDataView(event: event)
                 } label: {
@@ -198,6 +253,8 @@ struct HomeView: View {
             title
             subtitle
                 .padding(.top, 5)
+                .onAppear{
+                    self.refreshTasks()}
             pendingTasks
                 .padding(.vertical, 15)
             HStack{
@@ -210,7 +267,13 @@ struct HomeView: View {
             Spacer()
             eventList
                 .padding(.bottom, 15)
-                .onAppear{self.refreshEvents()}
+                .onAppear{
+                    self.refreshEvents();
+                    shownEvents = []
+                    for event in events.events{
+                        if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
+                            shownEvents.append(event)
+                        }} }
             Spacer()
         }.blur(radius: showFAB ? 2 : 0)
             if showFAB {
@@ -233,5 +296,19 @@ struct HomeView: View {
         NetworkManager.getEvents(sessionToken: userData.session_token) { events in
             self.events = events
         }
+
     }
+    
+    func refreshTasks(){
+        NetworkManager.getTasks(sessionToken: userData.session_token) { tasks in
+            self.tasks = tasks
+            self.shownTasks = self.tasks.tasks
+        }
+        
+    }
+    
 }
+
+
+
+

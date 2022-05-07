@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
 struct TaskRowCell: View {
     @Binding var task: Task
     @Binding var userData: LoginResponse
@@ -16,15 +17,23 @@ struct TaskRowCell: View {
         Circle()
             .strokeBorder(task.colorUI, lineWidth: 2)
             .background(Circle().fill(.clear))
-            .frame(width: 20, height: 20)
-            .padding(.trailing, 10)
+            .frame(width: 30, height: 30)
+            .padding(.trailing, 5)
     }
     
     private var filledCircle: some View {
+        ZStack{
         Circle()
-            .foregroundColor(.gray)
-            .frame(width: 20, height: 20)
-            .padding(.trailing, 10)
+            .foregroundColor(task.colorUI)
+            .frame(width: 30, height: 30)
+            .padding(.trailing, 5)
+            
+        Image(systemName: "checkmark")
+                .resizable()
+                .frame(width: 14, height: 14, alignment: .center)
+                .foregroundColor(.white)
+                .padding(.leading, -3)
+        }
     }
     
     
@@ -44,10 +53,17 @@ struct TaskRowCell: View {
 
             }
 
-        
-        Text(task.task_name)
-            .font(.system(size: 15, weight: .medium, design: .default))
+            VStack(alignment: .leading){
+            Text(task.task_name)
+            .font(.system(size: 16, weight: .medium, design: .default))
             .foregroundColor(.black)
+            .padding(.leading, -1)
+            
+            Text(Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .abbreviated, time: .omitted))
+                .font(.system(size: 14, weight: .regular, design: .default))
+                .foregroundColor(.gray)
+                .padding(.leading, -1)
+            }
         Spacer()
         }
     }

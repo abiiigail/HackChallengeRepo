@@ -9,18 +9,33 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct CalendarView: View {
-    @State var currentDate: Date = Date()
     @Binding var tasks: Tasks
     @Binding var shownTasks: [Task]
     @Binding var events: Events
     @Binding var userData: LoginResponse
     @Binding var showFAB: Bool
+    @State var tasksToShow = [Task]()
+    @State var eventsToShow = [Event]()
+    @Binding var currentDate: Date
     
     var body: some View {
         ZStack{
             VStack(spacing: 20){
-                WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData)
-                .onAppear{refreshTasks()}
+                WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow)
+                    .onAppear{
+                        tasksToShow = []
+                        for task in tasks.tasks {
+                            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                                tasksToShow.append(task)
+                            }
+                        }
+                        eventsToShow = []
+                        for event in events.events {
+                            if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted){
+                                eventsToShow.append(event)
+                            }
+                        }
+                        ;refreshTasks()}
             }.blur(radius: showFAB ? 2 : 0)
             if showFAB {
                 Rectangle()

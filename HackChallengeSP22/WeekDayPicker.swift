@@ -13,6 +13,8 @@ struct WeekDayPicker: View {
     @Binding var tasks: Tasks
     @Binding var events: Events
     @Binding var userData: LoginResponse
+    @Binding var tasksToShow: [Task]
+    @Binding var eventsToShow: [Event]
     
     @State var currentMonth: Int = 0
     var body: some View {
@@ -65,6 +67,22 @@ struct WeekDayPicker: View {
                             RoundedRectangle(cornerRadius: 15).fill(Color(.sRGB, red: 0.44, green: 0.6, blue: 0.92, opacity: 1.0)).padding(.horizontal,6).opacity(isSameDay(date1: value.date, date2: currentDate) ? 1 : 0))
                         .onTapGesture {
                             currentDate = value.date
+                            tasksToShow = []
+                            for task in tasks.tasks {
+                                let epochTime = TimeInterval(task.due_date)
+                                let convertedDate = Date(timeIntervalSince1970: epochTime)
+                                if isSameDay(date1: convertedDate, date2: currentDate) && task.completed == false{
+                                    tasksToShow.append(task)
+                                }
+                            }
+                            eventsToShow = []
+                            for event in events.events {
+                                let epochTime = TimeInterval(event.start_time)
+                                let convertedDate = Date(timeIntervalSince1970: epochTime)
+                                if isSameDay(date1: convertedDate, date2: currentDate){
+                                    eventsToShow.append(event)
+                                }
+                            }
                         }
                 }
             }.padding(.top, -5).padding(.bottom, -25)
@@ -87,7 +105,7 @@ struct WeekDayPicker: View {
                     }) != nil{
                         
                         VStack {
-                            ForEach($events.events, id: \.self) { event in
+                            ForEach($eventsToShow, id: \.self) { event in
                             NavigationLink {
                                 EventDataView(event: event)
                             } label: {
@@ -117,16 +135,20 @@ struct WeekDayPicker: View {
                     return isSameDay(date1: convertedDate, date2: currentDate)
                 }) != nil{
                     VStack {
-                        ForEach($tasks.tasks, id: \.self) { task in
-                                TaskRowCell(task: task, userData: $userData)}
-                    }
                         
                     
-                }else{
+                    ForEach($tasksToShow, id: \.self) { task in
+                                TaskRowCell(task: task, userData: $userData)}
+                       
+                    }} else {
                     
                         Text("No Tasks Today :)").font(.system(size: 18, weight: .medium, design: .default))
-                }}}.padding(.top, 25).padding(.bottom,20)
                 }
+                    
+                }
+                
+            }.padding(.top, 25).padding(.bottom,20)
+        }
             
         }.padding(.horizontal, 25).onChange(of: currentMonth) { newValue in
             //updating month

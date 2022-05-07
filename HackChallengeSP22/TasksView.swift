@@ -16,6 +16,9 @@ struct TasksView: View {
     @Binding var userData: LoginResponse
     @Binding var showFAB: Bool
     @State var taskFilters = taskCategory.allCases
+    @Binding var isTodayOn: Bool
+    @Binding var currentDate: Date
+    @State var filterIsSelected = false
     
     private var taskView: some View {
         VStack(alignment: .leading, spacing: 0){
@@ -33,15 +36,19 @@ struct TasksView: View {
                     filterTasks()
                     print(chosenFilters.count)
                 }label: {
-                    TaskCategoriesCell(category: filter).padding(.trailing, 15).padding(.bottom, 25)}
+                    TaskCategoriesCell(filterIsSelected: $filterIsSelected, category: filter).padding(.trailing, 15).padding(.bottom, 25)}
             }
                 
-            }
+            }.onAppear{if chosenFilters.count == 0 && isTodayOn {self.filterTasks()}}
+            
+            Rectangle().frame(height: 1).foregroundColor(.black)
+                    .padding(.bottom, 15)
             
             Spacer()
             
             ScrollView(.vertical, showsIndicators: true) {
                 VStack {
+                    
                     ForEach($shownTasks, id: \.self) { task in
                     TaskRowCell(task: task, userData: $userData)
                     }
@@ -54,10 +61,11 @@ struct TasksView: View {
     
     var body: some View {
         ZStack{
+            Rectangle().fill(LinearGradient(gradient: Gradient(colors: [Color(.sRGB, red: 0.686, green: 0.81, blue: 1.0, opacity: 1.0), Color.white]), startPoint: .top, endPoint: .bottom)).frame(maxHeight: .infinity).ignoresSafeArea()
         taskView
+            .onAppear{if chosenFilters.count == 0 {self.filterTasks()}}
             .padding(.leading, 25)
             .padding(.trailing, 10)
-            .onAppear{self.refreshTasks()}
             .blur(radius: showFAB ? 2 : 0)
                 if showFAB {
                     Rectangle()
@@ -80,27 +88,13 @@ struct TasksView: View {
             self.tasks = tasks
             self.shownTasks = self.tasks.tasks
         }
+        
     }
     
-    func filterTodayTasks(){
-        var todaysTasks = [Task]()
-        
-        for task in tasks.tasks {
-            if task.due_date == Int(Date().timeIntervalSince1970) {
-                todaysTasks.append(task)
-            }
-        }
-        
-//        ForEach(tasks.tasks, id: \.self) {task in
-//            if task.due_date == Int(Date().timeIntervalSince1970) {
-//                todaysTasks.append(task)
-//            }
-//        }
-        shownTasks = todaysTasks
-        }
     
     func filterTasks(){
         var filteredTasks = [Task]()
+        
         
         if chosenFilters.count == 0 {refreshTasks()}
         else{
@@ -108,8 +102,9 @@ struct TasksView: View {
         for filter in chosenFilters{
             
             if filter.description == "Today" {
+            
             for task in tasks.tasks{
-                if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted) {
+                if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted) && task.completed == false {
                     filteredTasks.append(task)
             }
             }

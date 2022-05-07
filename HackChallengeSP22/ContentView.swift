@@ -15,11 +15,16 @@ struct ContentView: View {
     @State var shownTasks: [Task] = []
     @State var chosenFilters: [taskCategory] = []
     @State var events: Events = Events(events: [])
+    @State var isTodayOn = false
+    @State var currentDate: Date = Date()
+    @State var shownEvents = [Event]()
     var body: some View {
         TabView {
 
             NavigationView{
-                HomeView(events: $events, tasks: $tasks, shownTasks: $shownTasks, showFAB: $showFAB, userData: $userData)
+                HomeView(events: $events, tasks: $tasks, shownTasks: $shownTasks, showFAB: $showFAB, chosenFilters: $chosenFilters, userData: $userData, isTodayOn: $isTodayOn, currentDate: $currentDate, shownEvents: $shownEvents)
+                    .onAppear{refreshEvents();
+                    }
                     .toolbar {
                     Button {
                         //TODO: Add action
@@ -38,21 +43,28 @@ struct ContentView: View {
                     Text("Home")
                 }
             NavigationView{
-                CalendarView(tasks: $tasks, shownTasks: $shownTasks, events: $events, userData: $userData, showFAB: $showFAB)
+                CalendarView(tasks: $tasks, shownTasks: $shownTasks, events: $events, userData: $userData, showFAB: $showFAB, currentDate: $currentDate)
                     .background(Rectangle().fill(Color(.sRGB, red:  0.93, green: 0.96, blue: 0.99, opacity: 1.0)).frame(maxHeight: .infinity).ignoresSafeArea())
-            }.navigationBarHidden(false)
+            }
+                .navigationBarHidden(false)
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Calendar")
                 }
             NavigationView{
-                TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB)
+                TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
             }.navigationBarHidden(false)
                 .tabItem {
                     Image(systemName: "checklist")
                     Text("Tasks")
                 }
             }
+    }
+    
+    func refreshEvents(){
+        NetworkManager.getEvents(sessionToken: userData.session_token) { events in
+            self.events = events
+        }
     }
 }
 
