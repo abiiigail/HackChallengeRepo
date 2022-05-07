@@ -61,6 +61,8 @@ struct LoginView: View {
             }.padding(.bottom, 100)
             
             Button {
+                
+                if username != "" && password != ""{
                     print(username, password)
                     NetworkManager.postLogin(username: username, password: password) { login in
                         userData = login
@@ -68,6 +70,7 @@ struct LoginView: View {
                         successLogin.toggle()
                         print(userData)
                     }
+            }
                    
                 } label: {
                     ZStack{
