@@ -1,0 +1,6 @@
+framework module Pods_HackChallengeSP22Tests {
+  umbrella header "Pods-HackChallengeSP22Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

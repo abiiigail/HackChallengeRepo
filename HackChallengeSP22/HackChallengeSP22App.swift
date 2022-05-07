@@ -7,11 +7,12 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
 @main
 struct HackChallengeSP22App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StartView()
         }
     }
 }
