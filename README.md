@@ -8,9 +8,9 @@ Screenshots:
 ![Initial Screen](https://user-images.githubusercontent.com/105093988/167238076-531cf7ca-852a-4ea1-b346-7a15985b8e5d.png)
 ![Signup Page](https://user-images.githubusercontent.com/105093988/167238079-6f53e051-63b0-4013-a439-2538cd43533d.png)
 ![Login Page](https://user-images.githubusercontent.com/105093988/167238081-53946bc5-d840-488f-aa3d-3c89b8eb2eaa.png)
-![Home View](https://user-images.githubusercontent.com/105093988/167238074-08cd03bb-a598-4091-83b5-0be5d40a09d7.png)
-![Calendar View](https://user-images.githubusercontent.com/105093988/167238064-085f9880-46bc-485c-8d75-71f09b63e9b2.png)
-![Task View](https://user-images.githubusercontent.com/105093988/167238066-735747ee-7c50-4e8c-bda8-65f5e61beaa4.png)
+![Home View V2](https://user-images.githubusercontent.com/105093988/167248664-1ba6b203-c657-4506-b183-e6ebd6286849.png)
+![Calendar View V2](https://user-images.githubusercontent.com/105093988/167248600-44dce580-0cb3-4c31-9535-1ce6f39352ea.png)
+![Task View V2](https://user-images.githubusercontent.com/105093988/167248554-ea335265-cf78-46fd-91db-2a4933b09c1d.png)
 ![FloatingButton](https://user-images.githubusercontent.com/105093988/167238069-54bebc76-6914-4c6e-8b23-81981658671c.png)
 
 
