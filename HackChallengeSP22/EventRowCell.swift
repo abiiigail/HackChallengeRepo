@@ -9,6 +9,7 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct EventRowCell: View {
+    
     @Binding var event: Event
     @Binding var userData: LoginResponse
     static let id = "EventRowCellId"
@@ -23,10 +24,7 @@ struct EventRowCell: View {
     
     var body: some View {
         HStack{
-            Button {
-                
-                
-            } label: {
+
                 ZStack{
                 EventRectangle
                 HStack{
@@ -41,7 +39,7 @@ struct EventRowCell: View {
                 Spacer()
                     }
                 }
-                }
+                
 
             }
 

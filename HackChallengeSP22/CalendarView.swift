@@ -33,7 +33,7 @@ struct CalendarView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                ExpandableButton(showFAB: $showFAB, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, userData: $userData)}
             }
         }
     }

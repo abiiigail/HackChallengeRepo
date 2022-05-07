@@ -10,6 +10,8 @@ import SwiftUI
 @available(iOS 15.0, *)
 struct ExpandableButton: View {
     @Binding var showFAB: Bool
+    @Binding var tasks: Tasks
+    @Binding var shownTasks: [Task]
     @State var newTaskPresent = false
     @State var newEventPresent = false
     @Binding var userData: LoginResponse
@@ -33,6 +35,7 @@ struct ExpandableButton: View {
                     }.padding(.trailing, 10)
                 }.sheet(isPresented: $newTaskPresent) {
                     NewTask(userData: $userData, newTaskPresent: $newTaskPresent)
+                    .onDisappear{self.refreshTasks()}
                 }
                 
                 Button {
@@ -77,5 +80,13 @@ struct ExpandableButton: View {
             
         }
     }
+    
+    func refreshTasks(){
+        NetworkManager.getTasks(sessionToken: userData.session_token) { tasks in
+            self.tasks = tasks
+            self.shownTasks = self.tasks.tasks
+        }
+    }
+    
 }
 

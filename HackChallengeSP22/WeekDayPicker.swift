@@ -74,31 +74,42 @@ struct WeekDayPicker: View {
                 
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(alignment: .leading){
-                Text("Events")
+                    HStack{
+                    Text("Events")
                     .font(.title2.bold())
-                    .padding(.bottom, 25)
+                            .padding(.bottom, 15)
+                    Spacer()}
                     
                     if events.events.first(where: { event in
                         let epochTime = TimeInterval(event.start_time)
                         let convertedDate = Date(timeIntervalSince1970: epochTime)
                         return isSameDay(date1: convertedDate, date2: currentDate)
                     }) != nil{
+                        
                         VStack {
                             ForEach($events.events, id: \.self) { event in
-                                    EventRowCell(event: event, userData: $userData)}
+                            NavigationLink {
+                                EventDataView(event: event)
+                            } label: {
+                                EventRowCell(event: event, userData: $userData)
+                            }
                         }
-                            
+                    }
                         
-                    }else{
-                        Text("No Events Today :)") .font(.title2.bold())
+                    } else{
+                        
+                        
+                        Text("No Events Today :)").font(.system(size: 18, weight: .medium, design: .default))
+                        
                     }
                     
                     Spacer()
-                   
-                Text("Tasks")
+                
+                       
+                        Text("Tasks")
                     .font(.title2.bold())
-                    .padding(.bottom, 25)
-                   
+                    .padding(.top, 25).padding(.bottom, 15)
+                        
                 
                 if tasks.tasks.first(where: { task in
                     let epochTime = TimeInterval(task.due_date)
@@ -112,7 +123,8 @@ struct WeekDayPicker: View {
                         
                     
                 }else{
-                    Text("No Tasks Today :)") .font(.title2.bold())
+                    
+                        Text("No Tasks Today :)").font(.system(size: 18, weight: .medium, design: .default))
                 }}}.padding(.top, 25).padding(.bottom,20)
                 }
             

@@ -11,6 +11,8 @@ import SwiftUI
 struct HomeView: View {
     @State var showEvent = false
     @Binding var events: Events
+    @Binding var tasks: Tasks
+    @Binding var shownTasks: [Task]
     @Binding var showFAB: Bool
     @Binding var userData: LoginResponse
     
@@ -18,7 +20,7 @@ struct HomeView: View {
     
     
     private var title: some View {
-        Text("Hi Matilda,")
+        Text("Welcome,")
             .font(.system(size: 40, weight: .semibold, design: .default))
             .foregroundColor(Color(.sRGB, red: 0.10, green: 0.13, blue: 0.24, opacity: 1))
             .padding(.leading, 25)
@@ -26,7 +28,7 @@ struct HomeView: View {
     }
     
     private var subtitle: some View {
-        Text("Today is Monday, April 22")
+        Text("Today is \(Date().formatted(date: .complete, time: .omitted))")
             .font(.system(size: 25, weight: .semibold, design: .default))
             .foregroundColor(.black)
             .padding(.leading, 25)
@@ -222,7 +224,7 @@ struct HomeView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                ExpandableButton(showFAB: $showFAB, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, userData: $userData)}
             }.padding(.horizontal, 15).padding(.bottom, 15)
         }
     }

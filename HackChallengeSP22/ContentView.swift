@@ -19,7 +19,7 @@ struct ContentView: View {
         TabView {
 
             NavigationView{
-                HomeView(events: $events, showFAB: $showFAB, userData: $userData)
+                HomeView(events: $events, tasks: $tasks, shownTasks: $shownTasks, showFAB: $showFAB, userData: $userData)
                     .toolbar {
                     Button {
                         //TODO: Add action
