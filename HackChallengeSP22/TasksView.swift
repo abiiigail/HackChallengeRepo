@@ -27,8 +27,11 @@ struct TasksView: View {
             HStack{
             ForEach(taskFilters, id: \.self){ filter in
                 Button{
-                    
-                    //Action: change shown task to filter button
+                    if chosenFilters.contains(filter){
+                        chosenFilters.remove(at: chosenFilters.firstIndex(of: filter)!)}
+                    else{chosenFilters.append(filter)}
+                    filterTasks()
+                    print(chosenFilters.count)
                 }label: {
                     TaskCategoriesCell(category: filter).padding(.trailing, 15).padding(.bottom, 25)}
             }
@@ -39,7 +42,7 @@ struct TasksView: View {
             
             ScrollView(.vertical, showsIndicators: true) {
                 VStack {
-                    ForEach($tasks.tasks, id: \.self) { task in
+                    ForEach($shownTasks, id: \.self) { task in
                     TaskRowCell(task: task, userData: $userData)
                     }
 
@@ -79,5 +82,69 @@ struct TasksView: View {
         }
     }
     
+    func filterTodayTasks(){
+        var todaysTasks = [Task]()
+        
+        for task in tasks.tasks {
+            if task.due_date == Int(Date().timeIntervalSince1970) {
+                todaysTasks.append(task)
+            }
+        }
+        
+//        ForEach(tasks.tasks, id: \.self) {task in
+//            if task.due_date == Int(Date().timeIntervalSince1970) {
+//                todaysTasks.append(task)
+//            }
+//        }
+        shownTasks = todaysTasks
+        }
+    
+    func filterTasks(){
+        var filteredTasks = [Task]()
+        
+        if chosenFilters.count == 0 {refreshTasks()}
+        else{
+        
+        for filter in chosenFilters{
+            
+            if filter.description == "Today" {
+            for task in tasks.tasks{
+                if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted) {
+                    filteredTasks.append(task)
+            }
+            }
+            }
+            
+            if filter.description == "Completed" {
+            for task in tasks.tasks{
+                if task.completed == true {
+                    if !filteredTasks.contains(task){
+                        filteredTasks.append(task)
+                    }
+            }
+            }
+            }
+            
+            if filter.description == "Upcoming" {
+                for task in tasks.tasks{
+                    var dayComponent = DateComponents()
+                    dayComponent.day = 1
+                    let calendar = Calendar.current
+                    let nextDate: Date = calendar.date(byAdding: dayComponent, to: Date())!
+                    if (Date(timeIntervalSince1970: TimeInterval(task.due_date)) + 1).formatted(date: .complete, time: .omitted) == (nextDate).formatted(date: .complete, time: .omitted) {
+                        if !filteredTasks.contains(task){
+                        filteredTasks.append(task)
+                        }
+                    }
+                }
+                
+            }
+            
+            
+    }
+        shownTasks = filteredTasks
+        }}
 }
+    
+
 
