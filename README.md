@@ -21,4 +21,4 @@ How App Addresses Requirements:
 - Has multiple Lists, such as the list of tasks in the Tasks tab.
 - Navigation between multiple screens, such as between the launch, signup, login and home page.
 - Integrated with Backend API to create events and tasks and users.
-- SwiftUI or AutoLayout using NSLayoutConstraint or SnapKit (no storyboards)
+
