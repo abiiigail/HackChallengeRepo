@@ -19,6 +19,9 @@ struct HomeView: View {
     @Binding var isTodayOn: Bool
     @Binding var currentDate: Date
     @Binding var shownEvents: [Event]
+    @Binding var tasksToShow: [Task]
+    @Binding var eventsToShow: [Event]
+
     
     private var numPending: Int {
     var acc = 0
@@ -71,7 +74,7 @@ struct HomeView: View {
     
     private var pendingTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow)
         } label: {
             ZStack{
                 RoundedRectangle(cornerRadius: 25)
@@ -114,7 +117,7 @@ struct HomeView: View {
     
     private var completedTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -160,7 +163,7 @@ struct HomeView: View {
     
     private var upcomingTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -284,7 +287,7 @@ struct HomeView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, currentDate: $currentDate)}
             }.padding(.horizontal, 15).padding(.bottom, 15)
         }
     }

@@ -15,8 +15,8 @@ struct CalendarView: View {
     @Binding var shownEvents: [Event]
     @Binding var userData: LoginResponse
     @Binding var showFAB: Bool
-    @State var tasksToShow = [Task]()
-    @State var eventsToShow = [Event]()
+    @Binding var tasksToShow: [Task]
+    @Binding var eventsToShow: [Event]
     @Binding var currentDate: Date
     
     var body: some View {
@@ -24,19 +24,9 @@ struct CalendarView: View {
             VStack(spacing: 20){
                 WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, shownTasks: $shownTasks)
                     .onAppear{
-                        tasksToShow = []
-                        for task in tasks.tasks {
-                            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
-                                tasksToShow.append(task)
-                            }
-                        }
-                        eventsToShow = []
-                        for event in events.events {
-                            if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted){
-                                eventsToShow.append(event)
-                            }
-                        }
-                        ;refreshTasks()}
+                        refreshCalendarTasks();
+                        refreshCalendarEvents();
+                        refreshTasks()}
             }.blur(radius: showFAB ? 2 : 0)
             if showFAB {
                 Rectangle()
@@ -49,7 +39,7 @@ struct CalendarView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, currentDate: $currentDate)}
             }
         }
     }
@@ -61,6 +51,22 @@ struct CalendarView: View {
         }
     }
     
+    func refreshCalendarTasks(){
+        tasksToShow = []
+        for task in tasks.tasks {
+            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                tasksToShow.append(task)
+            }
+        }
+    }
     
+    func refreshCalendarEvents(){
+        tasksToShow = []
+        for task in tasks.tasks {
+            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                tasksToShow.append(task)
+            }
+        }
+    }
     
 }

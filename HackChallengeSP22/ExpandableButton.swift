@@ -17,6 +17,9 @@ struct ExpandableButton: View {
     @State var newTaskPresent = false
     @State var newEventPresent = false
     @Binding var userData: LoginResponse
+    @Binding var tasksToShow: [Task]
+    @Binding var eventsToShow: [Event]
+    @Binding var currentDate: Date
 
     var body: some View {
         
@@ -37,7 +40,7 @@ struct ExpandableButton: View {
                     }.padding(.trailing, 10)
                 }.sheet(isPresented: $newTaskPresent) {
                     NewTask(userData: $userData, newTaskPresent: $newTaskPresent)
-                    .onDisappear{self.refreshTasks()}
+                        .onDisappear{self.refreshTasks(); self.refreshCalendarTasks()}
                 }
                 
                 Button {
@@ -57,7 +60,7 @@ struct ExpandableButton: View {
                     }.padding(.trailing, 10)
                 }.sheet(isPresented: $newEventPresent) {
                     NewEvent(userData: $userData, newEventPresent: $newEventPresent)
-                        .onDisappear{self.refreshEvents()}
+                        .onDisappear{self.refreshEvents(); self.refreshCalendarEvents()}
                 }
             }
     
@@ -102,5 +105,23 @@ func refreshEvents(){
         }
     }
 }
+    
+    func refreshCalendarTasks(){
+        tasksToShow = []
+        for task in tasks.tasks {
+            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                tasksToShow.append(task)
+            }
+        }
+    }
+    
+    func refreshCalendarEvents(){
+        tasksToShow = []
+        for task in tasks.tasks {
+            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                tasksToShow.append(task)
+            }
+        }
+    }
 
 }

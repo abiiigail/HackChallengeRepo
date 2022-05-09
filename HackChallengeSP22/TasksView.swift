@@ -21,6 +21,9 @@ struct TasksView: View {
     @Binding var isTodayOn: Bool
     @Binding var currentDate: Date
     @State var filterIsSelected = false
+    @Binding var tasksToShow: [Task]
+    @Binding var eventsToShow: [Event]
+
     
     private var taskView: some View {
         VStack(alignment: .leading, spacing: 0){
@@ -80,7 +83,7 @@ struct TasksView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, currentDate: $currentDate)}
             }
         }
     }
@@ -88,7 +91,7 @@ struct TasksView: View {
     func refreshTasks(){
         NetworkManager.getTasks(sessionToken: userData.session_token) { tasks in
             self.tasks = tasks
-            self.shownTasks = self.tasks.tasks
+            self.shownTasks = self.tasks.tasks.reversed()
         }
         
     }
@@ -139,7 +142,7 @@ struct TasksView: View {
             
             
     }
-        shownTasks = filteredTasks
+        shownTasks = filteredTasks.reversed()
         }}
 }
     
