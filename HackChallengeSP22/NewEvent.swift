@@ -43,15 +43,12 @@ struct NewEvent: View {
         Rectangle().frame(height: 1).foregroundColor(.black)
                 .padding(.bottom, 15)
         }.padding(.bottom, 15).padding(.trailing, 25)
-                
+
             
-            DatePicker("Event date", selection: $selectedDate, displayedComponents: .date)
+            DatePicker("Start", selection: $selectedStart)
                 .padding(.trailing, 25)
             
-            DatePicker("Start", selection: $selectedStart, displayedComponents: .hourAndMinute)
-                .padding(.trailing, 25)
-            
-            DatePicker("End", selection: $selectedEnd, displayedComponents: .hourAndMinute)
+            DatePicker("End", selection: $selectedEnd)
                 .padding(.trailing, 25)
             
             HStack{

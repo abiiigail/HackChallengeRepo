@@ -12,6 +12,8 @@ struct TasksView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var tasks: Tasks
     @Binding var shownTasks: [Task]
+    @Binding var events: Events
+    @Binding var shownEvents: [Event]
     @Binding var chosenFilters: [taskCategory]
     @Binding var userData: LoginResponse
     @Binding var showFAB: Bool
@@ -50,7 +52,7 @@ struct TasksView: View {
                 VStack {
                     
                     ForEach($shownTasks, id: \.self) { task in
-                    TaskRowCell(task: task, userData: $userData)
+                        TaskRowCell(task: task, userData: $userData, tasks: $tasks, shownTasks: $shownTasks)
                     }
 
             }
@@ -78,7 +80,7 @@ struct TasksView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks,  userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
             }
         }
     }

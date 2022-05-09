@@ -15,6 +15,7 @@ struct WeekDayPicker: View {
     @Binding var userData: LoginResponse
     @Binding var tasksToShow: [Task]
     @Binding var eventsToShow: [Event]
+    @Binding var shownTasks: [Task]
     
     @State var currentMonth: Int = 0
     var body: some View {
@@ -138,7 +139,7 @@ struct WeekDayPicker: View {
                         
                     
                     ForEach($tasksToShow, id: \.self) { task in
-                                TaskRowCell(task: task, userData: $userData)}
+                        TaskRowCell(task: task, userData: $userData, tasks: $tasks, shownTasks: $shownTasks)}
                        
                     }} else {
                     

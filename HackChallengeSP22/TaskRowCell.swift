@@ -11,6 +11,8 @@ import SwiftUI
 struct TaskRowCell: View {
     @Binding var task: Task
     @Binding var userData: LoginResponse
+    @Binding var tasks: Tasks
+    @Binding var shownTasks: [Task]
     static let id = "TaskRowCellId"
     
     private var emptyCircle: some View {
@@ -42,6 +44,7 @@ struct TaskRowCell: View {
             Button {
                 NetworkManager.completeTask(sessionToken: userData.session_token, id: task.task_id!, completed: !task.completed) { update in
                     task = update
+                    self.refreshTasks()
                 }
                 
             } label: {
@@ -67,4 +70,10 @@ struct TaskRowCell: View {
         Spacer()
         }
     }
+    func refreshTasks(){
+        NetworkManager.getTasks(sessionToken: userData.session_token) { tasks in
+            self.tasks = tasks
+            self.shownTasks = self.tasks.tasks
+        }
+}
 }

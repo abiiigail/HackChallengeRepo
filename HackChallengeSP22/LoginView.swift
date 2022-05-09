@@ -83,27 +83,6 @@ struct LoginView: View {
                         .foregroundColor(.white)
                     }
                 }
-            
-                // LOGOUT BUTTON
-//            Button {
-//                print(userData.session_token)
-//
-//                NetworkManager.postLogout(sessionToken: userData.session_token) { logout in
-//                    print(logout.message)
-//                }
-//
-//                NetworkManager.postRefresh(updateToken: userData.update_token) { refresh in
-//                    userData = refresh
-//                    print(userData)
-//                }
-//
-//            } label: {
-//                ZStack{
-//                RoundedRectangle(cornerRadius: 25)
-//                        .frame(width: 100, height: 65)
-//                    Text("Logout").foregroundColor(.white)
-//                }.padding(.bottom, 15)
-//            }
 
 
             }.padding(.horizontal, 25)

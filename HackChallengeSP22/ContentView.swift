@@ -30,7 +30,7 @@ struct ContentView: View {
 
             NavigationView{
                 HomeView(events: $events, tasks: $tasks, shownTasks: $shownTasks, showFAB: $showFAB, chosenFilters: $chosenFilters, userData: $userData, isTodayOn: $isTodayOn, currentDate: $currentDate, shownEvents: $shownEvents)
-                    .onAppear{refreshEvents();
+                    .onAppear{
                     username = ""
                     password = ""
                     }
@@ -63,7 +63,7 @@ struct ContentView: View {
                     Text("Home")
                 }
             NavigationView{
-                CalendarView(tasks: $tasks, shownTasks: $shownTasks, events: $events, userData: $userData, showFAB: $showFAB, currentDate: $currentDate)
+                CalendarView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData, showFAB: $showFAB, currentDate: $currentDate)
                     .background(Rectangle().fill(Color(.sRGB, red:  0.93, green: 0.96, blue: 0.99, opacity: 1.0)).frame(maxHeight: .infinity).ignoresSafeArea())
             }
                 .navigationBarHidden(false)
@@ -72,7 +72,7 @@ struct ContentView: View {
                     Text("Calendar")
                 }
             NavigationView{
-                TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+                TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
             }.navigationBarHidden(false)
                 .tabItem {
                     Image(systemName: "checklist")
@@ -81,14 +81,9 @@ struct ContentView: View {
             }
     }
     
-    func refreshEvents(){
-        NetworkManager.getEvents(sessionToken: userData.session_token) { events in
-            self.events = events
-        }
-    }
-}
 
         
 
 
 
+}

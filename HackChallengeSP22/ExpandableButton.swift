@@ -12,6 +12,8 @@ struct ExpandableButton: View {
     @Binding var showFAB: Bool
     @Binding var tasks: Tasks
     @Binding var shownTasks: [Task]
+    @Binding var events: Events
+    @Binding var shownEvents: [Event]
     @State var newTaskPresent = false
     @State var newEventPresent = false
     @Binding var userData: LoginResponse
@@ -55,6 +57,7 @@ struct ExpandableButton: View {
                     }.padding(.trailing, 10)
                 }.sheet(isPresented: $newEventPresent) {
                     NewEvent(userData: $userData, newEventPresent: $newEventPresent)
+                        .onDisappear{self.refreshEvents()}
                 }
             }
     
@@ -87,6 +90,17 @@ struct ExpandableButton: View {
             self.shownTasks = self.tasks.tasks
         }
     }
-    
+
+func refreshEvents(){
+    NetworkManager.getEvents(sessionToken: userData.session_token) { events in
+        self.events = events
+        shownEvents = []
+        for event in events.events{
+            if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
+                shownEvents.append(event)
+    }
+        }
+    }
 }
 
+}

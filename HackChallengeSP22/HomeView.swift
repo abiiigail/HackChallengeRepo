@@ -71,7 +71,7 @@ struct HomeView: View {
     
     private var pendingTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack{
                 RoundedRectangle(cornerRadius: 25)
@@ -114,7 +114,7 @@ struct HomeView: View {
     
     private var completedTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -160,7 +160,7 @@ struct HomeView: View {
     
     private var upcomingTasks: some View {
         NavigationLink{
-            TasksView(tasks: $tasks, shownTasks: $shownTasks, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
+            TasksView(tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, chosenFilters: $chosenFilters, userData: $userData, showFAB: $showFAB, isTodayOn: $isTodayOn, currentDate: $currentDate)
         } label: {
             ZStack(alignment: .leading){
                 RoundedRectangle(cornerRadius: 25)
@@ -269,11 +269,8 @@ struct HomeView: View {
                 .padding(.bottom, 15)
                 .onAppear{
                     self.refreshEvents();
-                    shownEvents = []
-                    for event in events.events{
-                        if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
-                            shownEvents.append(event)
-                        }} }
+                    
+                        }
             Spacer()
         }.blur(radius: showFAB ? 2 : 0)
             if showFAB {
@@ -287,7 +284,7 @@ struct HomeView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
             }.padding(.horizontal, 15).padding(.bottom, 15)
         }
     }
@@ -295,8 +292,13 @@ struct HomeView: View {
     func refreshEvents(){
         NetworkManager.getEvents(sessionToken: userData.session_token) { events in
             self.events = events
+            shownEvents = []
+            for event in events.events{
+                if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
+                    shownEvents.append(event)
         }
-
+            }
+        }
     }
     
     func refreshTasks(){
@@ -307,8 +309,8 @@ struct HomeView: View {
         
     }
     
+
+
+
+
 }
-
-
-
-

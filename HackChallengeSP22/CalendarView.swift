@@ -12,6 +12,7 @@ struct CalendarView: View {
     @Binding var tasks: Tasks
     @Binding var shownTasks: [Task]
     @Binding var events: Events
+    @Binding var shownEvents: [Event]
     @Binding var userData: LoginResponse
     @Binding var showFAB: Bool
     @State var tasksToShow = [Task]()
@@ -21,7 +22,7 @@ struct CalendarView: View {
     var body: some View {
         ZStack{
             VStack(spacing: 20){
-                WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow)
+                WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, shownTasks: $shownTasks)
                     .onAppear{
                         tasksToShow = []
                         for task in tasks.tasks {
@@ -48,7 +49,7 @@ struct CalendarView: View {
                 Spacer()
                 VStack(alignment: .leading){
                 Spacer()
-                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, userData: $userData)}
+                    ExpandableButton(showFAB: $showFAB, tasks: $tasks, shownTasks: $shownTasks, events: $events, shownEvents: $shownEvents, userData: $userData)}
             }
         }
     }
@@ -59,5 +60,7 @@ struct CalendarView: View {
             self.shownTasks = self.tasks.tasks
         }
     }
+    
+    
     
 }
