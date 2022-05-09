@@ -24,9 +24,9 @@ struct CalendarView: View {
             VStack(spacing: 20){
                 WeekDayPicker(currentDate: $currentDate, tasks: $tasks, events: $events, userData: $userData, tasksToShow: $tasksToShow, eventsToShow: $eventsToShow, shownTasks: $shownTasks)
                     .onAppear{
-                        refreshCalendarTasks();
-                        refreshCalendarEvents();
-                        refreshTasks()}
+                        refreshTasks();
+                        refreshEvents()
+                    }
             }.blur(radius: showFAB ? 2 : 0)
             if showFAB {
                 Rectangle()
@@ -51,20 +51,16 @@ struct CalendarView: View {
         }
     }
     
-    func refreshCalendarTasks(){
-        tasksToShow = []
-        for task in tasks.tasks {
-            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
-                tasksToShow.append(task)
-            }
-        }
-    }
+
     
-    func refreshCalendarEvents(){
-        tasksToShow = []
-        for task in tasks.tasks {
-            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
-                tasksToShow.append(task)
+    func refreshEvents(){
+        NetworkManager.getEvents(sessionToken: userData.session_token) { events in
+            self.events = events
+            shownEvents = []
+            for event in events.events{
+                if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == Date().formatted(date: .complete, time: .omitted){
+                    shownEvents.append(event)
+        }
             }
         }
     }

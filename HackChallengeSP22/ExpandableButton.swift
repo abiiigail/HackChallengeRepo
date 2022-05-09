@@ -116,12 +116,11 @@ func refreshEvents(){
     }
     
     func refreshCalendarEvents(){
-        tasksToShow = []
-        for task in tasks.tasks {
-            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
-                tasksToShow.append(task)
+        eventsToShow = []
+        for event in events.events {
+            if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) {
+                eventsToShow.append(event)
             }
         }
     }
-
 }

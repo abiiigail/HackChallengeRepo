@@ -57,6 +57,9 @@ struct WeekDayPicker: View {
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                 }
+            }.onAppear{
+                self.refreshCalendarTasks();
+                self.refreshCalendarEvents()
             }
             
             let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -68,23 +71,11 @@ struct WeekDayPicker: View {
                             RoundedRectangle(cornerRadius: 15).fill(Color(.sRGB, red: 0.44, green: 0.6, blue: 0.92, opacity: 1.0)).padding(.horizontal,6).opacity(isSameDay(date1: value.date, date2: currentDate) ? 1 : 0))
                         .onTapGesture {
                             currentDate = value.date
-                            tasksToShow = []
-                            for task in tasks.tasks {
-                                let epochTime = TimeInterval(task.due_date)
-                                let convertedDate = Date(timeIntervalSince1970: epochTime)
-                                if isSameDay(date1: convertedDate, date2: currentDate) && task.completed == false{
-                                    tasksToShow.append(task)
-                                }
-                            }
-                            eventsToShow = []
-                            for event in events.events {
-                                let epochTime = TimeInterval(event.start_time)
-                                let convertedDate = Date(timeIntervalSince1970: epochTime)
-                                if isSameDay(date1: convertedDate, date2: currentDate){
-                                    eventsToShow.append(event)
-                                }
-                            }
+                            self.refreshCalendarTasks();
+                            self.refreshCalendarEvents()
+                            
                         }
+                        
                 }
             }.padding(.top, -5).padding(.bottom, -25)
             
@@ -133,7 +124,7 @@ struct WeekDayPicker: View {
                 if tasks.tasks.first(where: { task in
                     let epochTime = TimeInterval(task.due_date)
                     let convertedDate = Date(timeIntervalSince1970: epochTime)
-                    return isSameDay(date1: convertedDate, date2: currentDate)
+                    return (isSameDay(date1: convertedDate, date2: currentDate) && task.completed == false)
                 }) != nil{
                     VStack {
                         
@@ -235,6 +226,24 @@ struct WeekDayPicker: View {
         }
         
         return days
+    }
+    
+    func refreshCalendarTasks(){
+        tasksToShow = []
+        for task in tasks.tasks {
+            if Date(timeIntervalSince1970: TimeInterval(task.due_date)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) && task.completed == false {
+                tasksToShow.append(task)
+            }
+        }
+    }
+    
+    func refreshCalendarEvents(){
+        eventsToShow = []
+        for event in events.events {
+            if Date(timeIntervalSince1970: TimeInterval(event.start_time)).formatted(date: .complete, time: .omitted) == currentDate.formatted(date: .complete, time: .omitted) {
+                eventsToShow.append(event)
+            }
+        }
     }
 }
 
