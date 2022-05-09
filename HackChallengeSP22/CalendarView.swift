@@ -47,7 +47,7 @@ struct CalendarView: View {
     func refreshTasks(){
         NetworkManager.getTasks(sessionToken: userData.session_token) { tasks in
             self.tasks = tasks
-            self.shownTasks = self.tasks.tasks
+            self.shownTasks = self.tasks.tasks.reversed()
         }
     }
     

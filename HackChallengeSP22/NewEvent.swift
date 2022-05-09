@@ -62,6 +62,7 @@ struct NewEvent: View {
                    
             }.padding(.bottom, 15)
             
+            
             Text("Color")
             
            
