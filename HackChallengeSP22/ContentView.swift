@@ -10,6 +10,8 @@ import SwiftUI
 @available(iOS 15.0, *)
 struct ContentView: View {
     @Binding var userData: LoginResponse
+    @Binding var username: String
+    @Binding var password: String
     @State var showFAB = false
     @State var tasks: Tasks = Tasks(tasks: [])
     @State var shownTasks: [Task] = []
@@ -18,21 +20,39 @@ struct ContentView: View {
     @State var isTodayOn = false
     @State var currentDate: Date = Date()
     @State var shownEvents = [Event]()
+    
+    @Binding var tryingLogin: Bool
+    @Binding var successSignUp: Bool
+    @Binding var successLogin: Bool
+    
     var body: some View {
         TabView {
 
             NavigationView{
                 HomeView(events: $events, tasks: $tasks, shownTasks: $shownTasks, showFAB: $showFAB, chosenFilters: $chosenFilters, userData: $userData, isTodayOn: $isTodayOn, currentDate: $currentDate, shownEvents: $shownEvents)
                     .onAppear{refreshEvents();
+                    username = ""
+                    password = ""
                     }
                     .toolbar {
                     Button {
-                        //TODO: Add action
+                        NetworkManager.postLogout(sessionToken: userData.session_token) { logout in
+                        print (logout)
+                        NetworkManager.postRefresh(updateToken: userData.update_token) { refresh in
+                        userData = refresh
+                        
+                            }
+                            tryingLogin = true
+                            successLogin = false
+                            successSignUp = false
+                        
+                        }
+                        
                     } label: {
-                        Image(systemName: "person.circle")
+                        Image("LogoutIcon")
                             .resizable()
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(.white)
+                            .frame(width: 24, height: 24)
+            
                     }
                     }
                     .background(RoundedRectangle(cornerRadius: 40).fill(Color(.sRGB, red: 0.44, green: 0.6, blue: 0.92, opacity: 1.0)).frame(maxHeight: .infinity).padding(.bottom, 480).ignoresSafeArea())

@@ -26,7 +26,7 @@ struct StartView: View {
                 SignUpView(firstName: $firstName, username: $username, password: $password, tryingLogin: $tryingLogin, tryingSignUp: $tryingSignUp,userData: $userData, successSignUp: $successSignUp, successLogin: $successLogin)
             }
             if successSignUp || successLogin {
-                ContentView(userData: $userData)
+                ContentView(userData: $userData, username: $username, password: $password, tryingLogin: $tryingLogin, successSignUp: $successSignUp, successLogin: $successLogin)
             }
             else if !tryingLogin && !tryingSignUp{
                 

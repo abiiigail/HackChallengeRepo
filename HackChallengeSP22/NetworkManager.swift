@@ -60,6 +60,7 @@ class NetworkManager {
         }
     }
     
+    
     static func postLogout(sessionToken: String, completion: @escaping (LogoutResponse) -> Void) {
         let endpoint = "\(host)/api/logout/"
         let headers: HTTPHeaders = [
@@ -72,6 +73,7 @@ class NetworkManager {
                 let jsonDecoder = JSONDecoder()
                 if let userResponse = try? jsonDecoder.decode(LogoutResponse.self, from: data) {
                     completion(userResponse)
+                    print("Logout success")
                 } else {
                     print("Failed to decode postLogout")
                 }
